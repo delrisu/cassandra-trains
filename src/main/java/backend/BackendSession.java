@@ -39,9 +39,9 @@ public class BackendSession {
             GET_STATION =
                     session.prepare("SELECT * FROM Station WHERE station_id = ?");
             GET_TRAIN_LOAD_BY_TYPE =
-                    session.prepare("SELECT sum(commodity_weight) FROM train_load WHERE train_id=? AND cname=?;");
+                    session.prepare("SELECT sum(commodity_weight) as commodity_weight FROM train_load WHERE train_id=? AND cname=?;");
             GET_WAREHOUSE_COMMODITY_BY_TYPE =
-                    session.prepare("SELECT SUM(commodity_weight) FROM station_warehouse WHERE station_id=? AND cname=?;");
+                    session.prepare("SELECT SUM(commodity_weight) as commodity_weight FROM station_warehouse WHERE station_id=? AND cname=?;");
             INSERT_WAREHOUSE_COMMODITY_BY_TYPE =
                     session.prepare("INSERT INTO station_warehouse (station_id, commodity_name, log_id, commodity_weight) VALUES (?, ?, ?, ?)");
             INSERT_TRAIN_LOAD_BY_TYPE =
