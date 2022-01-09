@@ -27,13 +27,15 @@ public class BackendSession {
     public static PreparedStatement INSERT_TRAIN;
     public static PreparedStatement DELETE_TRAIN;
     public static PreparedStatement GET_TRAIN_LOAD_WEIGHT_BY_TYPE;
-    public static PreparedStatement INSERT_TRAIN_LOAD_BY_TYPE;
+    public static PreparedStatement INSERT_TRAIN_LOAD;
+    public static PreparedStatement DELETE_TRAIN_LOAD;
     public static PreparedStatement GET_STATIONS;
     public static PreparedStatement GET_STATION;
     public static PreparedStatement INSERT_STATION;
     public static PreparedStatement DELETE_STATION;
     public static PreparedStatement GET_WAREHOUSE_COMMODITY_WEIGHT_BY_TYPE;
-    public static PreparedStatement INSERT_WAREHOUSE_COMMODITY_BY_TYPE;
+    public static PreparedStatement INSERT_WAREHOUSE_COMMODITY;
+    public static PreparedStatement DELETE_WAREHOUSE_COMMODITY;
     public static PreparedStatement UPDATE_TRAIN_STATION;
 
     private void prepareStatements() throws BackendException {
@@ -50,10 +52,14 @@ public class BackendSession {
                     session.prepare("SELECT sum(commodity_weight) as commodity_weight FROM train_load WHERE train_id=? AND commodity_name=?;");
             GET_WAREHOUSE_COMMODITY_WEIGHT_BY_TYPE =
                     session.prepare("SELECT SUM(commodity_weight) as commodity_weight FROM station_warehouse WHERE station_id=? AND commodity_name=?;");
-            INSERT_WAREHOUSE_COMMODITY_BY_TYPE =
+            INSERT_WAREHOUSE_COMMODITY =
                     session.prepare("INSERT INTO station_warehouse (station_id, commodity_name, log_id, commodity_weight) VALUES (?, ?, ?, ?)");
-            INSERT_TRAIN_LOAD_BY_TYPE =
+            DELETE_WAREHOUSE_COMMODITY =
+                    session.prepare("DELETE FROM station_warehouse WHERE station_id = ? AND commodity_name = ? AND log_id = ?");
+            INSERT_TRAIN_LOAD =
                     session.prepare("INSERT INTO train_load (train_id, commodity_name, log_id, commodity_weight) VALUES (?, ?, ?, ?)");
+            DELETE_TRAIN_LOAD =
+                    session.prepare("DELETE FROM train_load WHERE train_id = ? AND commodity_name = ? AND log_id = ?");
             DELETE_STATION =
                     session.prepare("DELETE FROM station WHERE station_id = ?");
             DELETE_TRAIN =
