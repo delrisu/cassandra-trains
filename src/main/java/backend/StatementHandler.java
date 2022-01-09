@@ -9,6 +9,7 @@ import model.Station;
 import model.Train;
 
 import java.util.ArrayList;
+import java.util.Optional;
 
 public class StatementHandler {
     private Session session;
@@ -35,7 +36,7 @@ public class StatementHandler {
         return trains;
     }
 
-    public Train getTrain(String trainId) throws BackendException {
+    public Optional<Train> getTrain(String trainId) throws BackendException {
 
         BoundStatement boundStatement = new BoundStatement(BackendSession.GET_TRAINS);
         boundStatement.bind(trainId);
@@ -46,10 +47,16 @@ public class StatementHandler {
         } catch(Exception e){
             throw new BackendException("Could not perform a query. " + e.getMessage() + ".", e);
         }
-        return new Train(resultSet.one());
+
+        Row row = resultSet.one();
+        if (row != null){
+            return Optional.of(new Train(row));
+        }else{
+            return Optional.empty();
+        }
     }
 
-    public CommodityWeight getTrainLoadWeightByType(String trainId, String commodityName) throws BackendException {
+    public Optional<CommodityWeight> getTrainLoadWeightByType(String trainId, String commodityName) throws BackendException {
         BoundStatement boundStatement = new BoundStatement(BackendSession.GET_TRAIN_LOAD_WEIGHT_BY_TYPE);
         boundStatement.bind(trainId, commodityName);
         ResultSet resultSet = null;
@@ -59,7 +66,12 @@ public class StatementHandler {
         } catch (Exception e) {
             throw new BackendException("Could not perform a query. " + e.getMessage() + ".", e);
         }
-        return new CommodityWeight(resultSet.one());
+        Row row = resultSet.one();
+        if (row != null){
+            return Optional.of(new CommodityWeight(row));
+        }else{
+            return Optional.empty();
+        }
     }
 
     public void updateTrainStation(String train_id, String station_id) throws BackendException {
@@ -134,7 +146,7 @@ public class StatementHandler {
         return stations;
     }
 
-    public Station getStation(String stationId) throws BackendException {
+    public Optional<Station> getStation(String stationId) throws BackendException {
 
         BoundStatement boundStatement = new BoundStatement(BackendSession.GET_STATION);
         boundStatement.bind(stationId);
@@ -145,10 +157,16 @@ public class StatementHandler {
         } catch (Exception e) {
             throw new BackendException("Could not perform a query. " + e.getMessage() + ".", e);
         }
-        return new Station(resultSet.one());
+
+        Row row = resultSet.one();
+        if (row != null){
+            return Optional.of(new Station(row));
+        }else{
+            return Optional.empty();
+        }
     }
 
-    public CommodityWeight getWarehouseCommodityWeightByType(String stationId, String commodityName) throws BackendException {
+    public Optional<CommodityWeight> getWarehouseCommodityWeightByType(String stationId, String commodityName) throws BackendException {
         BoundStatement boundStatement = new BoundStatement(BackendSession.GET_WAREHOUSE_COMMODITY_WEIGHT_BY_TYPE);
         boundStatement.bind(stationId, commodityName);
         ResultSet resultSet = null;
@@ -158,7 +176,12 @@ public class StatementHandler {
         } catch (Exception e) {
             throw new BackendException("Could not perform a query. " + e.getMessage() + ".", e);
         }
-        return new CommodityWeight(resultSet.one());
+        Row row = resultSet.one();
+        if (row != null){
+            return Optional.of(new CommodityWeight(row));
+        }else {
+            return Optional.empty();
+        }
     }
 
     public void insertStation(String station_id, String station_name) throws BackendException {
