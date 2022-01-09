@@ -83,6 +83,28 @@ public class StatementHandler {
         }
     }
 
+    public void insertTrainLoad(String train_id, String commodity_name, String log_id, String commodity_weight) throws BackendException {
+
+        BoundStatement boundStatement = new BoundStatement(BackendSession.INSERT_TRAIN_LOAD);
+        boundStatement.bind(train_id, commodity_name, log_id, commodity_weight);
+        try {
+            session.execute(boundStatement);
+        } catch (Exception e) {
+            throw new BackendException("Could not perform a query. " + e.getMessage() + ".", e);
+        }
+    }
+
+    public void deleteTrainLoad(String train_id, String commodity_name, String log_id) throws BackendException {
+
+        BoundStatement boundStatement = new BoundStatement(BackendSession.DELETE_TRAIN_LOAD);
+        boundStatement.bind(train_id, commodity_name, log_id);
+        try {
+            session.execute(boundStatement);
+        } catch (Exception e) {
+            throw new BackendException("Could not perform a query. " + e.getMessage() + ".", e);
+        }
+    }
+
     public void deleteTrain(String trainId) throws BackendException {
 
         BoundStatement boundStatement = new BoundStatement(BackendSession.DELETE_TRAIN);
@@ -143,6 +165,28 @@ public class StatementHandler {
 
         BoundStatement boundStatement = new BoundStatement(BackendSession.INSERT_STATION);
         boundStatement.bind(station_id, station_name);
+        try {
+            session.execute(boundStatement);
+        } catch (Exception e) {
+            throw new BackendException("Could not perform a query. " + e.getMessage() + ".", e);
+        }
+    }
+
+    public void InsertStationWarehouseCommodity(String station_id, String commodity_name, String log_id, String commodity_weight) throws BackendException {
+
+        BoundStatement boundStatement = new BoundStatement(BackendSession.INSERT_WAREHOUSE_COMMODITY);
+        boundStatement.bind(station_id, commodity_name, log_id, commodity_weight);
+        try {
+            session.execute(boundStatement);
+        } catch (Exception e) {
+            throw new BackendException("Could not perform a query. " + e.getMessage() + ".", e);
+        }
+    }
+
+    public void deleteStationWarehouseCommodity(String station_id, String commodity_name, String log_id) throws BackendException {
+
+        BoundStatement boundStatement = new BoundStatement(BackendSession.DELETE_WAREHOUSE_COMMODITY);
+        boundStatement.bind(station_id, commodity_name, log_id);
         try {
             session.execute(boundStatement);
         } catch (Exception e) {
