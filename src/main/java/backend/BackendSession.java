@@ -97,7 +97,7 @@ public class BackendSession {
 
   public Optional<Train> getTrain(String trainId) throws BackendException {
 
-    BoundStatement boundStatement = new BoundStatement(BackendSession.GET_TRAINS);
+    BoundStatement boundStatement = new BoundStatement(BackendSession.GET_TRAIN);
     boundStatement.bind(trainId);
     ResultSet resultSet;
 
