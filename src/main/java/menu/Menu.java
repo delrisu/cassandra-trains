@@ -37,7 +37,7 @@ public class Menu {
     if (optionalStation.isPresent()) {
       UUID trainId = UUID.randomUUID();
       backendSession.insertTrain(trainId.toString(), trainName, stationUUID);
-      return "Train " + trainName + " with id: " + trainId + " was added to station with id: " + stationUUID;
+      return "Train " + trainName + " with id: " + trainId + " has been added to station with id: " + stationUUID;
     }
 
     return SOMETHING_WENT_WRONG;
@@ -52,7 +52,7 @@ public class Menu {
     Optional<Train> train = backendSession.getTrain(trainUUID);
     if (train.isPresent()) {
       backendSession.deleteTrain(trainUUID);
-      return "Train with id: " + trainUUID + " was deleted";
+      return "Train with id: " + trainUUID + " has been deleted";
     }
 
     return SOMETHING_WENT_WRONG;
@@ -129,9 +129,9 @@ public class Menu {
           }
 
           UUID logIdStation = UUID.randomUUID();
-          backendSession.InsertStationWarehouseCommodity(station.getStationId(), commodityName, logIdStation.toString(), optionalCommodityWeight.get().getCommodityWeight());
+          backendSession.insertStationWarehouseCommodity(station.getStationId(), commodityName, logIdStation.toString(), optionalCommodityWeight.get().getCommodityWeight());
 
-          return "Moved " + commodityWeight + "t of " + commodityName + " from train with id: " + trainUUID + " to station with id: " + station.getStationId();
+          return "Moved " + commodityWeight + "t of " + commodityName + " from train with id: " + trainUUID + " to warehouse near the station with id: " + station.getStationId();
         }
         return SOMETHING_WENT_WRONG;
       }
@@ -156,7 +156,7 @@ public class Menu {
         Optional<CommodityWeight> optionalCommodityWeight = backendSession.getTrainLoadWeightByType(trainUUID, commodityName);
         if (optionalCommodityWeight.isPresent() && optionalCommodityWeight.get().getCommodityWeight() >= commodityWeight) {
           UUID logIdStation = UUID.randomUUID();
-          backendSession.InsertStationWarehouseCommodity(station.getStationId(), commodityName, logIdStation.toString(), -1 * optionalCommodityWeight.get().getCommodityWeight());
+          backendSession.insertStationWarehouseCommodity(station.getStationId(), commodityName, logIdStation.toString(), -1 * optionalCommodityWeight.get().getCommodityWeight());
 
           //CHECK 1
           Optional<CommodityWeight> optionalCommodityWeightCheck = backendSession.getWarehouseCommodityWeightByType(station.getStationId(), commodityName);
@@ -172,11 +172,27 @@ public class Menu {
             return SOMETHING_WENT_WRONG;
           }
 
-          return "Moved " + commodityWeight + "t of " + commodityName + " from station with id: " + station.getStationId() + " to train with id: " + trainUUID;
+          return "Moved " + commodityWeight + "t of " + commodityName + " from warehouse near station with id: " + station.getStationId() + " to train with id: " + trainUUID;
         }
         return SOMETHING_WENT_WRONG;
       }
       return SOMETHING_WENT_WRONG;
+    }
+    return SOMETHING_WENT_WRONG;
+  }
+
+  @Command
+  public String insertTrainLoad(
+      @Param(name = "train_UUID", description = "Name of an existing train") String trainUUID,
+      @Param(name = "commodity_name", description = "Name of commodity") String commodityName,
+      @Param(name = "commodity_weight", description = "Weight of commodity") Integer commodityWeight) throws BackendException {
+
+    Optional<Train> optionalTrain = backendSession.getTrain(trainUUID);
+
+    if (optionalTrain.isPresent()) {
+      backendSession.insertTrainLoad(trainUUID, commodityName, UUID.randomUUID().toString(), commodityWeight);
+
+      return commodityWeight + "t of " + commodityName + " has been inserted into train with id: " + trainUUID;
     }
     return SOMETHING_WENT_WRONG;
   }
@@ -188,7 +204,7 @@ public class Menu {
       @Param(name = "station_name", description = "Name for new station") String stationName) throws BackendException {
     UUID stationId = UUID.randomUUID();
     backendSession.insertStation(stationId.toString(), stationName);
-    return "Station " + stationName + " with id: " + stationId + " was added";
+    return "Station " + stationName + " with id: " + stationId + " has been added";
   }
 
   @Command
@@ -227,6 +243,22 @@ public class Menu {
     }
 
     return "No stations found.";
+  }
+
+  @Command
+  public String insertStationWarehouseCommodity(
+      @Param(name = "station_UUID", description = "Name of an existing train") String stationUUID,
+      @Param(name = "commodity_name", description = "Name of commodity") String commodityName,
+      @Param(name = "commodity_weight", description = "Weight of commodity") Integer commodityWeight) throws BackendException {
+
+    Optional<Station> optionalStation = backendSession.getStation(stationUUID);
+
+    if (optionalStation.isPresent()) {
+      backendSession.insertStationWarehouseCommodity(stationUUID, commodityName, UUID.randomUUID().toString(), commodityWeight);
+
+      return commodityWeight + "t of " + commodityName + " has been inserted into warehouse near the station with id: " + stationUUID;
+    }
+    return SOMETHING_WENT_WRONG;
   }
 
 }

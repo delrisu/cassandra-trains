@@ -37,10 +37,6 @@ public class BackendSession {
     prepareStatements();
   }
 
-  public Session getSession() {
-    return session;
-  }
-
   private void prepareStatements() throws BackendException {
     try {
       GET_TRAINS =
@@ -254,7 +250,7 @@ public class BackendSession {
     }
   }
 
-  public void InsertStationWarehouseCommodity(String station_id, String commodity_name, String log_id, Integer commodity_weight) throws BackendException {
+  public void insertStationWarehouseCommodity(String station_id, String commodity_name, String log_id, Integer commodity_weight) throws BackendException {
 
     BoundStatement boundStatement = new BoundStatement(BackendSession.INSERT_WAREHOUSE_COMMODITY);
     boundStatement.bind(station_id, commodity_name, log_id, commodity_weight);
