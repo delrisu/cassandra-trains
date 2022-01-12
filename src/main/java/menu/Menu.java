@@ -25,7 +25,7 @@ public class Menu {
 
   @Command//Generate UUID for train, Add to database
   public String addTrain(
-      @Param(name = "train_name", description = "Name for new train") String trainName, //TODO: Name should be unique?
+      @Param(name = "train_name", description = "Name for new train") String trainName,
       @Param(name = "station_UUID", description = "UUID of an existing station") String stationUUID) throws BackendException {
 
     Optional<Station> optionalStation = backendSession.getStation(stationUUID);
@@ -48,9 +48,10 @@ public class Menu {
     Optional<Train> train = backendSession.getTrain(trainUUID);
     if (train.isPresent()) {
       backendSession.deleteTrain(trainUUID);
+      return "Train with id: " + trainUUID + " was deleted";
     }
 
-    return "Train with id: " + trainUUID + " was deleted";
+    return SOMETHING_WENT_WRONG;
   }
 
   @Command
@@ -59,20 +60,16 @@ public class Menu {
     Optional<Train> train = backendSession.getTrain(trainUUID);
     if (train.isPresent()) {
       return train.get().toString();
-    } else {
-      return SOMETHING_WENT_WRONG;
     }
-
+    return SOMETHING_WENT_WRONG;
   }
 
   @Command
   public String getTrains() throws BackendException {
     ArrayList<Train> trains = backendSession.getTrains();
-
     if (trains.size() == 0) {
       return "No available trains. :(";
     }
-
     return trains.toString();
   }
 
@@ -89,7 +86,6 @@ public class Menu {
       return "Moved train " + train.getTrainName() + " with id: " + trainUUID + " from station with id "
           + train.getStationId() + " to station with id: " + stationUUID;
     }
-
     return SOMETHING_WENT_WRONG;
   }
 
@@ -175,7 +171,7 @@ public class Menu {
 
     Optional<Station> optionalStation = backendSession.getStation(stationUUID);
 
-    if(optionalStation.isPresent()) {
+    if (optionalStation.isPresent()) {
       backendSession.deleteStation(stationUUID);
 
       return "Deleted station with id: " + stationUUID;
@@ -189,7 +185,7 @@ public class Menu {
       @Param(name = "station_UUID", description = "Unique id for station") String stationUUID) throws BackendException {
     Optional<Station> optionalStation = backendSession.getStation(stationUUID);
 
-    if(optionalStation.isPresent()) {
+    if (optionalStation.isPresent()) {
       return optionalStation.get().toString();
     }
 
@@ -200,7 +196,7 @@ public class Menu {
   public String getStations() throws BackendException {
     ArrayList<Station> stations = backendSession.getStations();
 
-    if(stations.size() > 0){
+    if (stations.size() > 0) {
       return stations.toString();
     }
 
