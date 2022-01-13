@@ -89,6 +89,7 @@ public class BackendSession {
         session.execute(new BoundStatement(session.prepare(command)));
         System.out.println(command + " DONE");
       }
+      session.close();
     } catch (Exception e) {
       throw new BackendException(e.getMessage(), e);
     }
