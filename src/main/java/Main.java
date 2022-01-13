@@ -1,10 +1,12 @@
 import asg.cliche.ShellFactory;
 import backend.BackendException;
 import backend.BackendSession;
+import com.google.common.io.Resources;
 import menu.Menu;
 
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.Objects;
 import java.util.Properties;
 
