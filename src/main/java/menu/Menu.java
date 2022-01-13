@@ -110,7 +110,7 @@ public class Menu {
             + train.getStationId() + " to station with id: " + stationUUID;
       }
     }
-    return SOMETHING_WENT_WRONG;
+    return "No train with that id";
   }
 
   @Command
@@ -130,31 +130,30 @@ public class Menu {
           Station station = optionalStation.get();
 
           UUID logIdTrain = UUID.randomUUID();
-          backendSession.insertTrainLoad(trainUUID, commodityName, logIdTrain.toString(), -1 * optionalCommodityWeight.get().getCommodityWeight());
+          backendSession.insertTrainLoad(trainUUID, commodityName, logIdTrain.toString(), -1 * commodityWeight);
 
           //CHECK 1
           Optional<Train> optionalTrainCheck = backendSession.getTrain(trainUUID);
-          if (!optionalTrainCheck.isPresent() || optionalTrainCheck.get().getStationId().equals(train.getStationId())) {
+          if (!optionalTrainCheck.isPresent() || !optionalTrainCheck.get().getStationId().equals(train.getStationId())) {
             backendSession.deleteTrainLoad(trainUUID, commodityName, logIdTrain.toString());
-            return SOMETHING_WENT_WRONG;
+            return "CHECK 1 FAIL";
           }
           //CHECK 2
           Optional<CommodityWeight> optionalCommodityWeightCheck = backendSession.getTrainLoadWeightByType(trainUUID, commodityName);
           if (!optionalCommodityWeightCheck.isPresent() || optionalCommodityWeightCheck.get().getCommodityWeight() < 0) {
             backendSession.deleteTrainLoad(trainUUID, commodityName, logIdTrain.toString());
-            return SOMETHING_WENT_WRONG;
+            return "CHECK 2 FAIL";
           }
 
-          UUID logIdStation = UUID.randomUUID();
-          backendSession.insertStationWarehouseCommodity(station.getStationId(), commodityName, logIdStation.toString(), optionalCommodityWeight.get().getCommodityWeight());
+          backendSession.insertStationWarehouseCommodity(station.getStationId(), commodityName, UUID.randomUUID().toString(), commodityWeight);
 
           return "Moved " + commodityWeight + "t of " + commodityName + " from train with id: " + trainUUID + " to warehouse near the station with id: " + station.getStationId();
         }
-        return SOMETHING_WENT_WRONG;
+        return "No station with that id";
       }
-      return SOMETHING_WENT_WRONG;
+      return "Not enough load";
     }
-    return SOMETHING_WENT_WRONG;
+    return "No train with that id";
   }
 
   @Command
@@ -173,29 +172,30 @@ public class Menu {
         Optional<CommodityWeight> optionalCommodityWeight = backendSession.getTrainLoadWeightByType(trainUUID, commodityName);
         if (optionalCommodityWeight.isPresent() && optionalCommodityWeight.get().getCommodityWeight() >= commodityWeight) {
           UUID logIdStation = UUID.randomUUID();
-          backendSession.insertStationWarehouseCommodity(station.getStationId(), commodityName, logIdStation.toString(), -1 * optionalCommodityWeight.get().getCommodityWeight());
+          backendSession.insertStationWarehouseCommodity(station.getStationId(), commodityName, logIdStation.toString(), -1 * commodityWeight);
 
           //CHECK 1
           Optional<CommodityWeight> optionalCommodityWeightCheck = backendSession.getWarehouseCommodityWeightByType(station.getStationId(), commodityName);
           if (!optionalCommodityWeightCheck.isPresent() || optionalCommodityWeightCheck.get().getCommodityWeight() < 0) {
             backendSession.deleteStationWarehouseCommodity(trainUUID, commodityName, logIdStation.toString());
-            return SOMETHING_WENT_WRONG;
+            return "CHECK 1 FAIL";
           }
 
           //CHECK 2
           Optional<Train> optionalTrainCheck = backendSession.getTrain(trainUUID);
-          if (!optionalTrainCheck.isPresent() || optionalTrainCheck.get().getStationId().equals(train.getStationId())) {
+          if (!optionalTrainCheck.isPresent() || !optionalTrainCheck.get().getStationId().equals(train.getStationId())) {
             backendSession.deleteStationWarehouseCommodity(trainUUID, commodityName, logIdStation.toString());
-            return SOMETHING_WENT_WRONG;
+            return "CHECK 2 FAIL";
           }
 
+          backendSession.insertTrainLoad(trainUUID, commodityName, UUID.randomUUID().toString(), commodityWeight);
           return "Moved " + commodityWeight + "t of " + commodityName + " from warehouse near station with id: " + station.getStationId() + " to train with id: " + trainUUID;
         }
-        return SOMETHING_WENT_WRONG;
+        return "Not enough load";
       }
-      return SOMETHING_WENT_WRONG;
+      return "No station with that id";
     }
-    return SOMETHING_WENT_WRONG;
+    return "No train with that id";
   }
 
   @Command
