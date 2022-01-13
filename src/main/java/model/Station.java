@@ -23,11 +23,11 @@ public class Station {
     return stationName;
   }
 
-    @Override
-    public String toString() {
-        return "Station{" +
-            "stationId='" + stationId + '\'' +
-            ", stationName='" + stationName + '\'' +
-            '}';
-    }
+  @Override
+  public String toString() {
+    return "Station{" +
+        "stationId='" + stationId + '\'' +
+        ", stationName='" + stationName + '\'' +
+        '}';
+  }
 }
