@@ -18,6 +18,8 @@ public class Menu {
   TODO: Add meaningful error messages.
    */
 
+  private static final String[] load_types = {"coal", "iron", "copper", "gold", "diamonds"};
+
   private static final String SOMETHING_WENT_WRONG = "Something went wrong! :(";
   BackendSession backendSession;
 
@@ -66,6 +68,21 @@ public class Menu {
       return train.get().toString();
     }
     return SOMETHING_WENT_WRONG;
+  }
+
+  @Command
+  public String getTrainLoad(
+      @Param(name = "train_UUID", description = "Unique id for train") String trainUUID
+  ) throws BackendException {
+
+    StringBuilder answer = new StringBuilder("Load of train with id: " + trainUUID + ":\n");
+
+    for(String type: load_types){
+      Optional<CommodityWeight> trainLoadWeightByType = backendSession.getTrainLoadWeightByType(trainUUID, type);
+      trainLoadWeightByType.ifPresent(commodityWeight -> answer.append(type).append(": ").append(commodityWeight.getCommodityWeight()).append("\n"));
+    }
+
+    return answer.toString();
   }
 
   @Command
@@ -232,6 +249,20 @@ public class Menu {
     }
 
     return SOMETHING_WENT_WRONG;
+  }
+
+  @Command
+  public String getStationWarehouseLoad(
+      @Param(name = "warehouse_UUID", description = "Unique id for station") String stationUUID
+  ) throws BackendException {
+
+    StringBuilder answer = new StringBuilder("Load of station with id: " + stationUUID + ":\n");
+
+    for(String type: load_types){
+      Optional<CommodityWeight> trainLoadWeightByType = backendSession.getWarehouseCommodityWeightByType(stationUUID, type);
+      trainLoadWeightByType.ifPresent(commodityWeight -> answer.append(type).append(": ").append(commodityWeight.getCommodityWeight()).append("\n"));
+    }
+    return answer.toString();
   }
 
   @Command
