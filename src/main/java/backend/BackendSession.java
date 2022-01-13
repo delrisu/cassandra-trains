@@ -30,6 +30,7 @@ public class BackendSession {
   public static String LOAD_DATA;
   public static String CREATE_SCHEMAS;
   private final Session session;
+
   public BackendSession(String contactPoint, String keyspace) throws BackendException {
     Cluster cluster = Cluster.builder().addContactPoint(contactPoint)
         .withQueryOptions(new QueryOptions().setConsistencyLevel(ConsistencyLevel.QUORUM)).build();
@@ -37,7 +38,7 @@ public class BackendSession {
       LOAD_DATA = Resources.toString(Resources.getResource("load_data.cql"), StandardCharsets.UTF_8);
       CREATE_SCHEMAS = Resources.toString(Resources.getResource("create_schema.cql"), StandardCharsets.UTF_8);
       session = cluster.connect(keyspace);
-      createSchemas();
+      createSchemas(cluster);
     } catch (Exception e) {
       throw new BackendException("Could not connect to the cluster. " + e.getMessage() + ".", e);
     }
@@ -81,21 +82,20 @@ public class BackendSession {
     }
   }
 
-  private void createSchemas() throws BackendException {
-    for(String command: BackendSession.CREATE_SCHEMAS.split(System.getProperty("line.separator")))
-    {
-      try {
+  private void createSchemas(Cluster cluster) throws BackendException {
+    try {
+      Session session = cluster.connect();
+      for (String command : BackendSession.CREATE_SCHEMAS.split(System.getProperty("line.separator"))) {
         session.execute(new BoundStatement(session.prepare(command)));
         System.out.println(command + " DONE");
-      } catch (Exception e) {
-        throw new BackendException("Could not perform a query. " + e.getMessage() + ".", e);
       }
+    } catch (Exception e) {
+      throw new BackendException(e.getMessage(), e);
     }
   }
 
   public void loadData() throws BackendException {
-    for(String command: BackendSession.LOAD_DATA.replace(")" + System.getProperty("line.separator"), ") ").split(System.getProperty("line.separator")))
-    {
+    for (String command : BackendSession.LOAD_DATA.replace(")" + System.getProperty("line.separator"), ") ").split(System.getProperty("line.separator"))) {
       try {
         session.execute(new BoundStatement(session.prepare(command)));
         System.out.println(command + " DONE");

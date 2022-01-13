@@ -33,7 +33,7 @@ public class Menu {
   public String loadData() throws BackendException {
     backendSession.loadData();
 
-    return "O KURWA";
+    return "ALL DONE";
   }
 
   /////////////////////////////////////////////TRAIN//////////////////////////////////////////////////////////////////
