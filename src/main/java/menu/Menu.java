@@ -103,7 +103,7 @@ public class Menu {
 
     if (optionalTrain.isPresent()) {
       Train train = optionalTrain.get();
-      Optional<Station> optionalStation = backendSession.getStation(train.getStationId());
+      Optional<Station> optionalStation = backendSession.getStation(stationUUID);
       if (optionalStation.isPresent()) {
         backendSession.updateTrainStation(trainUUID, stationUUID);
         return "Moved train " + train.getTrainName() + " with id: " + trainUUID + " from station with id "
