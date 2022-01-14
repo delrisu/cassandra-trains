@@ -13,7 +13,7 @@ public class MenuFeedback {
     public static final String LOAD_TRAIN_NOT_ENOUGH_COMMODITY = "Current station warehouse commodity volume is not sufficient for request";
     public static final String LOAD_UNLOAD_TRAIN_NEGATIVE_LOAD = "Operation cancelled due to race for commodity resources";
     public static final String LOAD_UNLOAD_TRAIN_CHANGED_STATION = "Operation cancelled due to change of train station";
-    public static final String LOAD_UNLOAD_TRAIN_DELETED_STATION = "Operation cancelled due to change of train station";
+    public static final String LOAD_UNLOAD_TRAIN_DELETED_STATION = "Operation cancelled due to deletion of train station";
     public static final String UNLOAD_TRAIN_SUCCESS = "Moved %dt of %s from train with id: %s to warehouse near the station with id: %s";
     public static final String LOAD_TRAIN_SUCCESS = "Moved %dt of %s from warehouse near station with id: %s to train with id: %s";
     public static final String MOVE_TRAIN_SUCCESS = "Moved train %s with id: %s from station with id %s to station with id: %s";
