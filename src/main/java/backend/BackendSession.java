@@ -1,10 +1,12 @@
 package backend;
 
 import com.datastax.driver.core.*;
+import com.google.common.io.Resources;
 import model.CommodityWeight;
 import model.Station;
 import model.Train;
 
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Optional;
 
@@ -25,12 +27,18 @@ public class BackendSession {
   public static PreparedStatement INSERT_WAREHOUSE_COMMODITY;
   public static PreparedStatement DELETE_WAREHOUSE_COMMODITY;
   public static PreparedStatement UPDATE_TRAIN_STATION;
+  public static String LOAD_DATA;
+  public static String CREATE_SCHEMAS;
   private final Session session;
+
   public BackendSession(String contactPoint, String keyspace) throws BackendException {
     Cluster cluster = Cluster.builder().addContactPoint(contactPoint)
         .withQueryOptions(new QueryOptions().setConsistencyLevel(ConsistencyLevel.QUORUM)).build();
     try {
+      LOAD_DATA = Resources.toString(Resources.getResource("load_data.cql"), StandardCharsets.UTF_8);
+      CREATE_SCHEMAS = Resources.toString(Resources.getResource("create_schema.cql"), StandardCharsets.UTF_8);
       session = cluster.connect(keyspace);
+      createSchemas(cluster);
     } catch (Exception e) {
       throw new BackendException("Could not connect to the cluster. " + e.getMessage() + ".", e);
     }
@@ -71,6 +79,30 @@ public class BackendSession {
           session.prepare("UPDATE train set station_id = ? WHERE train_id = ?");
     } catch (Exception e) {
       throw new BackendException("Could not prepare statements. " + e.getMessage() + ".", e);
+    }
+  }
+
+  private void createSchemas(Cluster cluster) throws BackendException {
+    try {
+      Session session = cluster.connect();
+      for (String command : BackendSession.CREATE_SCHEMAS.split(System.getProperty("line.separator"))) {
+        session.execute(new BoundStatement(session.prepare(command)));
+        System.out.println(command + " DONE");
+      }
+      session.close();
+    } catch (Exception e) {
+      throw new BackendException(e.getMessage(), e);
+    }
+  }
+
+  public void loadData() throws BackendException {
+    for (String command : BackendSession.LOAD_DATA.replace(")" + System.getProperty("line.separator"), ") ").split(System.getProperty("line.separator"))) {
+      try {
+        session.execute(new BoundStatement(session.prepare(command)));
+        System.out.println(command + " DONE");
+      } catch (Exception e) {
+        throw new BackendException("Could not perform a query. " + e.getMessage() + ".", e);
+      }
     }
   }
 
