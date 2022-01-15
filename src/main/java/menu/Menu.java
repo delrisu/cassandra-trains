@@ -4,6 +4,7 @@ import asg.cliche.Command;
 import asg.cliche.Param;
 import backend.BackendException;
 import backend.BackendSession;
+import loadtest.LoadTestThread;
 import model.CommodityWeight;
 import model.Station;
 import model.Train;
@@ -11,6 +12,10 @@ import model.Train;
 import java.util.ArrayList;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
+import java.util.stream.IntStream;
 
 public class Menu {
 
@@ -312,6 +317,38 @@ public class Menu {
             return String.format(MenuFeedback.INSERT_COMMODITY_SUCCESS, commodityWeight, commodityName, stationUUID);
         }
         return MenuFeedback.SOMETHING_WENT_WRONG;
+    }
+
+    @Command
+    public String performLoadTest(
+            @Param(name = "thread_count", description = "Number of threads performing test") Integer threadCount,
+            @Param(name = "test_length", description = "Length of test in seconds") Integer testLength,
+            @Param(name = "operation_interval", description = "Interval which indicates how often threads perform actions in milliseconds") Integer operationInterval,
+            @Param(name = "maximum_percent_of_commodity_weight", description = "Indicates maximum percent of available commodity will be used per operation") Integer maximumPercentOfCommodity,
+            @Param(name = "minimum_percent_of_commodity_weight", description = "Indicates minimum percent of available commodity will be used per operation") Integer minimumPercentOfCommodity
+    ){
+        if (maximumPercentOfCommodity < minimumPercentOfCommodity){
+            return MenuFeedback.LOAD_TEST_BAD_PERCENTAGES;
+        }
+        ExecutorService executorService = Executors.newFixedThreadPool(threadCount);
+        ArrayList<LoadTestThread> loadTestThreads = new ArrayList<>();
+        for (int i = 0; i < threadCount; i++) {
+            LoadTestThread loadTestThread = new LoadTestThread(operationInterval, testLength, maximumPercentOfCommodity, minimumPercentOfCommodity, backendSession);
+            loadTestThreads.add(loadTestThread);
+            executorService.execute(loadTestThread);
+        }
+        executorService.shutdown();
+        try {
+            executorService.awaitTermination(Long.MAX_VALUE, TimeUnit.MILLISECONDS);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        int operationSucceededCount = loadTestThreads.stream().flatMapToInt(loadTestThread -> IntStream.of(loadTestThread.getLoadUnloadWasSuccessfulCount())).sum();
+        int negativeCommodityWeightCount = loadTestThreads.stream().flatMapToInt(loadTestThread -> IntStream.of(loadTestThread.getNegativeCommodityWeightCount())).sum();
+        int trainChangedStationCount = loadTestThreads.stream().flatMapToInt(loadTestThread -> IntStream.of(loadTestThread.getTrainChangedStationCount())).sum();
+        int preconditionFailedCount = loadTestThreads.stream().flatMapToInt(loadTestThread -> IntStream.of(loadTestThread.getPreconditionFailedCount())).sum();
+        int operationFailedCount = negativeCommodityWeightCount+ trainChangedStationCount + preconditionFailedCount;
+        return String.format(MenuFeedback.LOAD_TEST_RESULTS, operationSucceededCount, operationFailedCount, negativeCommodityWeightCount, trainChangedStationCount, preconditionFailedCount);
     }
 
 }

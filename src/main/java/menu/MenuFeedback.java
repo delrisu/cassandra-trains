@@ -22,4 +22,6 @@ public class MenuFeedback {
     public static final String DELETE_STATION_SUCCESS = "Deleted station with id: %s";
     public static final String GET_STATIONS_NO_STATION = "No stations available";
     public static final String SOMETHING_WENT_WRONG = "Something went wrong! :(";
+    public static final String LOAD_TEST_RESULTS = "Load test results:\nOperation succeeded: %d\nOperation failed: %d\n\tdue to:\n\tNegative load: %d\n\tChange of train station: %d\n\tPrecondition failed: %d";
+    public static final String LOAD_TEST_BAD_PERCENTAGES = "Maximum percent must be higher than minimum percent of commodity!";
 }
