@@ -134,7 +134,7 @@ public class Menu {
 
         Optional<Train> optionalTrain = backendSession.getTrain(trainUUID);
 
-        if (commodityWeight < 0) {
+        if (commodityWeight > 0) {
             if (optionalTrain.isPresent()) {
                 Train train = optionalTrain.get();
                 Optional<Station> optionalStation = backendSession.getStation(train.getStationId());
@@ -189,7 +189,7 @@ public class Menu {
         Optional<Train> optionalTrain = backendSession.getTrain(trainUUID);
 
 
-        if (commodityWeight < 0) {
+        if (commodityWeight > 0) {
             if (optionalTrain.isPresent()) {
                 Train train = optionalTrain.get();
                 Optional<Station> optionalStation = backendSession.getStation(train.getStationId());
