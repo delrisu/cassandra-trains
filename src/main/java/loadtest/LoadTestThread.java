@@ -106,12 +106,13 @@ public class LoadTestThread implements Runnable {
             case MenuFeedback.LOAD_UNLOAD_TRAIN_NEGATIVE_LOAD:
                 this.negativeCommodityWeightCount += 1;
                 break;
-            case MenuFeedback.LOAD_UNLOAD_TRAIN_CHANGED_STATION:
+            case MenuFeedback.LOAD_UNLOAD_TRAIN_CHANGED_STATION_OR_TRAIN_DELETED:
                 this.trainChangedStationCount += 1;
                 break;
-            case MenuFeedback.LOAD_UNLOAD_TRAIN_DELETED_STATION:
+            case MenuFeedback.LOAD_UNLOAD_TRAIN_STATION_DELETED:
                 this.stationWasDeletedCount += 1;
                 break;
+            case MenuFeedback.COMMODITY_WEIGHT_ARGUMENT_MUST_BE_POSITIVE:
             case MenuFeedback.MISSING_TRAIN:
             case MenuFeedback.MISSING_TRAIN_STATION:
             case MenuFeedback.UNLOAD_TRAIN_NOT_ENOUGH_LOAD:
