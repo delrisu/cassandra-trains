@@ -17,7 +17,8 @@ public class MenuFeedback {
     public static final String UNLOAD_TRAIN_SUCCESS = "Moved %dt of %s from train with id: %s to warehouse near the station with id: %s";
     public static final String LOAD_TRAIN_SUCCESS = "Moved %dt of %s from warehouse near station with id: %s to train with id: %s";
     public static final String MOVE_TRAIN_SUCCESS = "Moved train %s with id: %s from station with id %s to station with id: %s";
-    public static final String INSERT_COMMODITY_SUCCESS = "%dt of %s has been inserted into train with id: %s";
+    public static final String INSERT_COMMODITY_SUCCESS = "%dt of %s has been inserted into station with id: %s";
+    public static final String INSERT_LOAD_SUCCESS = "%dt of %s has been inserted into train with id: %s";
     public static final String ADD_STATION_SUCCESS = "Station %s with id: %s has been added";
     public static final String DELETE_STATION_SUCCESS = "Deleted station with id: %s";
     public static final String GET_STATIONS_NO_STATION = "No stations available";

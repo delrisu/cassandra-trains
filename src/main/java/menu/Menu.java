@@ -245,7 +245,7 @@ public class Menu {
         if (optionalTrain.isPresent()) {
             backendSession.insertTrainLoad(trainUUID, commodityName, UUID.randomUUID().toString(), commodityWeight);
 
-            return String.format(MenuFeedback.INSERT_COMMODITY_SUCCESS, commodityWeight, commodityName, trainUUID);
+            return String.format(MenuFeedback.INSERT_LOAD_SUCCESS, commodityWeight, commodityName, trainUUID);
         }
         return MenuFeedback.SOMETHING_WENT_WRONG;
     }
